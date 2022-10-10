@@ -1,3 +1,8 @@
+ls -l
+mv
+chmod + x
+pwd
+ping
 1.find
 2.top/ps aux
 3.kill
