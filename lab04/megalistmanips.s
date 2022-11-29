@@ -45,9 +45,10 @@ main:
     li a0, 10
     ecall
 
+# a0 is the first node address and a1 is the func will execute 
 map:
     addi sp, sp, -12
-    sw ra, 0(sp)
+    sw ra, 0(sp)        
     sw s1, 4(sp)
     sw s0, 8(sp)
 
@@ -61,6 +62,7 @@ map:
     # - 4 for the array pointer
     # - 4 for the size of the array
     # - 4 more for the pointer to the next node
+# acquire the array and change them    
 mapLoop:
     add t1, s0, x0      # load the address of the array of current node into t1
     lw t2, 4(s0)        # load the size of the node's array into t2
@@ -68,7 +70,7 @@ mapLoop:
     add t1, t1, t0      # offset the array address by the count
     lw a0, 0(t1)        # load the value at that address into a0
 
-    jalr s1             # call the function on that value.
+    jalr s1 mystery     # call the function on that value.
 
     sw a0, 0(t1)        # store the returned value back into the array
     addi t0, t0, 1      # increment the count
@@ -98,7 +100,7 @@ create_default_list:
     li s2, 5  # size
     la s3, arrays
 loop: #do...
-    li a0, 12
+    li a0, 12       # 4 + 4 + 4
     jal malloc      # get memory for the next node
     mv s4, a0
     li a0, 20
@@ -165,6 +167,7 @@ print_newline:
     ecall
     jr ra
 
+# call the systemtic function to allocate the memory into new array
 malloc:
     mv a1, a0 # Move a0 into a1 so that we can do the syscall correctly
     li a0, 9

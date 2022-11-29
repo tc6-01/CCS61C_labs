@@ -43,28 +43,31 @@ main:	li	a0, 256		# array size in BYTES (power of 2 < array size)
 #  s1 = array limit (ptr)
 
 accessWords:
-	la	s0, array		# ptr to array
-	add	s1, s0, a0		# hardcode array limit (ptr)
-	slli	t1, a1, 2		# multiply stepsize by 4 because WORDS
+	la	s0, array		# s0 equal to array address
+	add	s1, s0, a0		# s1 equal to the last address of array
+	slli t1, a1, 2   # multiply stepsize by 4 because WORDS
+
+# outer loop ---- repcount
 wordLoop:
-	beq	a3, zero,  wordZero
+	beq	a3, zero,  wordZero # choose which operation to execute
 
 	lw	t0, 0(s0)		# array[index/4]++
-	addi	t0, t0, 1
-	sw	t0, 0(s0)
-	j	wordCheck
+	addi t0, t0, 1
+	sw t0, 0(s0)
+	j wordCheck
 
 wordZero:
 	sw	zero,  0(s0)		# array[index/4] = 0
 
 wordCheck:
-	add	s0, s0, t1		# increment ptr
+	add	s0, s0, t1		    # increment ptr
 	blt	s0, s1, wordLoop	# inner loop done?
 
 	addi	a2, a2, -1
 	bgtz	a2, accessWords	# outer loop done?
 	jr	ra
 
+# using byte finish the base operation
 
 accessBytes:
 	la	s0, array		# ptr to array
